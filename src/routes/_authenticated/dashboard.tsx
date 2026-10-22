@@ -65,8 +65,8 @@ function Dashboard() {
     mutationFn: async () => {
       const n = (v: string) => (v === "" ? null : Number(v.replace(",", ".")));
       const row = isCardio
-        ? { exercise, speed: n(f.speed), incline: n(f.incline), duration_min: n(f.minutes) }
-        : { exercise, weight_kg: n(f.weight), reps: n(f.reps) };
+        ? { exercise, speed: n(f.speed), incline: n(f.incline), duration_min: n(f.minutes), weight_kg: null, reps: null }
+        : { exercise, weight_kg: n(f.weight), reps: n(f.reps), speed: null, incline: null, duration_min: null };
       const { error } = await supabase.from("workout_sets").insert(row);
       if (error) throw error;
     },
