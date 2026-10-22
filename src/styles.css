@@ -71,3 +71,16 @@
     -webkit-font-smoothing: antialiased;
   }
 }
+
+@keyframes auth-mode-enter {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.auth-mode-transition {
+  animation: auth-mode-enter 280ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-mode-transition { animation: none; }
+}
