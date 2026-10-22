@@ -2,24 +2,33 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { CheckCircle2, Dumbbell, Lock, LogOut, Lightbulb, Trash2, TrendingUp } from "lucide-react";
+import { CheckCircle2, Dumbbell, Lock, LogOut, Lightbulb, Repeat, Trash2, TrendingUp, UserRound } from "lucide-react";
 import type { TablesInsert } from "@/integrations/supabase/types";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const WHATSAPP_URL =
   "https://wa.me/5551999672503?text=Ol%C3%A1!%20Quero%20assinar%20o%20plano%20Premium%20do%20app%20de%20treinos.";
-const EXERCISES: string[] = ["Supino", "Agachamento", "Terra", "Puxada", "Cárdio - Esteira"];
-const CARDIO = "Cárdio - Esteira";
+const EXERCISES: string[] = [
+  "Supino reto", "Supino inclinado", "Crucifixo", "Crossover",
+  "Desenvolvimento", "Elevação lateral", "Elevação frontal",
+  "Puxada frontal", "Remada curvada", "Remada unilateral", "Barra fixa",
+  "Rosca direta", "Rosca martelo", "Tríceps testa", "Tríceps polia",
+  "Agachamento", "Leg press", "Cadeira extensora", "Mesa flexora", "Levantamento terra", "Panturrilha",
+  "Abdominal", "Prancha",
+  "Cárdio - Esteira", "Cárdio - Bicicleta", "Cárdio - Elíptico",
+];
+const isCardioExercise = (e: string) => e.startsWith("Cárdio");
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
-      { title: "Treino de hoje — Série" },
+      { title: "Treino de hoje — Spark Gym" },
       { name: "description", content: "Registre suas séries do dia." },
-      { property: "og:title", content: "Treino de hoje — Série" },
+      { property: "og:title", content: "Treino de hoje — Spark Gym" },
       { property: "og:description", content: "Registre suas séries do dia." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -43,7 +52,8 @@ function Dashboard() {
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [suggestOpen, setSuggestOpen] = useState(false);
   const [suggestion, setSuggestion] = useState("");
-  const isCardio = exercise === CARDIO;
+  const [removing, setRemoving] = useState<Set<string>>(new Set());
+  const isCardio = isCardioExercise(exercise);
 
   const today = useQuery({
     queryKey: ["sets", "today", user.id],
@@ -86,8 +96,16 @@ function Dashboard() {
       const { error } = await supabase.from("workout_sets").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["sets"] }),
+    onSettled: (_d, _e, id) => {
+      setRemoving((prev) => { const next = new Set(prev); next.delete(id); return next; });
+      qc.invalidateQueries({ queryKey: ["sets"] });
+    },
   });
+
+  function removeWithAnimation(id: string) {
+    setRemoving((prev) => new Set(prev).add(id));
+    window.setTimeout(() => remove.mutate(id), 220);
+  }
 
   async function openPremium() {
     setPremiumOpen(true);
@@ -128,11 +146,27 @@ function Dashboard() {
       <header className="flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-bold">
           <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground"><Dumbbell className="h-4 w-4" /></span>
-          Série
+          Spark Gym
         </Link>
         <div className="flex items-center gap-1">
           {isAdmin.data && <Link to="/admin" className="rounded-lg px-3 py-2 text-sm text-muted-foreground">Admin</Link>}
-          <button onClick={signOut} aria-label="Sair" className="rounded-lg p-2 text-muted-foreground"><LogOut className="h-5 w-5" /></button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button aria-label="Menu do usuário" className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-muted-foreground transition-colors hover:text-foreground">
+                <UserRound className="h-5 w-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56 border-0 bg-card shadow-card">
+              <DropdownMenuLabel className="truncate text-xs font-normal text-muted-foreground">{user.email}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onSelect={signOut} className="gap-2">
+                <Repeat className="h-4 w-4" /> Trocar de conta
+              </DropdownMenuItem>
+              <DropdownMenuItem onSelect={signOut} className="gap-2 text-destructive focus:text-destructive">
+                <LogOut className="h-4 w-4" /> Sair
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
 
@@ -146,7 +180,7 @@ function Dashboard() {
         <div className="mt-4 space-y-4">
           <Select value={exercise} onValueChange={setExercise}>
             <SelectTrigger className="h-14 border-0 bg-secondary text-base font-semibold"><SelectValue /></SelectTrigger>
-            <SelectContent>{EXERCISES.map((e) => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
+            <SelectContent className="max-h-72">{EXERCISES.map((e) => <SelectItem key={e} value={e}>{e}</SelectItem>)}</SelectContent>
           </Select>
           {isCardio ? (
             <div className="grid grid-cols-3 gap-3">
@@ -171,18 +205,18 @@ function Dashboard() {
         <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">Hoje · {today.data?.length ?? 0} séries</h2>
         <div className="space-y-2">
           {today.data?.map((s) => (
-            <div key={s.id} className="flex items-center gap-3 rounded-xl bg-card px-4 py-3 shadow-card">
+            <div key={s.id} className={`flex items-center gap-3 rounded-xl bg-card px-4 py-3 shadow-card ${removing.has(s.id) ? "set-exit" : ""}`}>
               <CheckCircle2 className="h-5 w-5 shrink-0 text-primary" />
               <div className="flex-1">
                 <p className="font-semibold">{s.exercise}</p>
                 <p className="text-sm text-muted-foreground">
-                  {s.exercise === CARDIO
+                  {isCardioExercise(s.exercise)
                     ? `${s.speed ?? "-"} km/h · ${s.incline ?? 0}% · ${s.duration_min ?? "-"} min`
                     : `${s.weight_kg} kg × ${s.reps}`}
                 </p>
               </div>
               <span className="text-xs text-muted-foreground">{new Date(s.created_at).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}</span>
-              <button onClick={() => remove.mutate(s.id)} aria-label="Remover" className="p-1 text-muted-foreground"><Trash2 className="h-4 w-4" /></button>
+              <button onClick={() => removeWithAnimation(s.id)} aria-label="Remover" className="p-1 text-muted-foreground"><Trash2 className="h-4 w-4" /></button>
             </div>
           ))}
           {today.data?.length === 0 && <p className="rounded-xl bg-card p-6 text-center text-sm text-muted-foreground">Nenhuma série hoje. Bora!</p>}
