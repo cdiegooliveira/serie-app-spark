@@ -8,6 +8,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "O registro de treinos sem distrações. Carga, repetições e cárdio, na academia ou em casa." },
       { property: "og:title", content: "Série — Bata seu recorde diário" },
       { property: "og:description", content: "O registro de treinos sem distrações." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
