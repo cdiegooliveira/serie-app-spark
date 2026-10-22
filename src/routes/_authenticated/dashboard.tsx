@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 
 const WHATSAPP_URL =
   "https://wa.me/5551999672503?text=Ol%C3%A1!%20Quero%20assinar%20o%20plano%20Premium%20do%20app%20de%20treinos.";
-const EXERCISES = ["Supino", "Agachamento", "Terra", "Puxada", "Cárdio - Esteira"];
+const EXERCISES: string[] = ["Supino", "Agachamento", "Terra", "Puxada", "Cárdio - Esteira"];
 const CARDIO = "Cárdio - Esteira";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
@@ -35,7 +35,7 @@ function Dashboard() {
   const { user } = Route.useRouteContext();
   const qc = useQueryClient();
   const navigate = useNavigate();
-  const [exercise, setExercise] = useState(EXERCISES[0]);
+  const [exercise, setExercise] = useState<string>("Supino");
   const [f, setF] = useState({ weight: "", reps: "", speed: "", incline: "", minutes: "" });
   const [premiumOpen, setPremiumOpen] = useState(false);
   const [suggestOpen, setSuggestOpen] = useState(false);
@@ -90,13 +90,13 @@ function Dashboard() {
     setPremiumOpen(true);
   }
   async function unlockPremium() {
-    await supabase.from("premium_leads").insert({ email: user.email });
+    await supabase.from("premium_leads").insert({ email: user.email ?? null });
   }
   async function sendSuggestion() {
     const s = suggestion.trim();
     if (!s) return;
-    const { error } = await supabase.from("exercise_suggestions").insert({ suggestion: s.slice(0, 200), email: user.email });
-    if (error) return toast.error("Não foi possível enviar");
+    const { error } = await supabase.from("exercise_suggestions").insert({ suggestion: s.slice(0, 200), email: user.email ?? null });
+    if (error) { toast.error("Não foi possível enviar"); return; }
     toast.success("Obrigado pela sugestão!");
     setSuggestion("");
     setSuggestOpen(false);
