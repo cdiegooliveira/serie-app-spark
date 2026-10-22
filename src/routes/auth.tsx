@@ -4,6 +4,8 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import googleLogo from "@/assets/google-logo.png.asset.json";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -12,6 +14,8 @@ export const Route = createFileRoute("/auth")({
       { name: "description", content: "Entre para registrar seus treinos." },
       { property: "og:title", content: "Entrar — Série" },
       { property: "og:description", content: "Entre para registrar seus treinos." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: AuthPage,
@@ -60,9 +64,10 @@ function AuthPage() {
       <h1 className="text-3xl font-extrabold tracking-tight">{mode === "in" ? "Entrar" : "Criar conta"}</h1>
       <p className="mt-2 text-muted-foreground">Seu histórico fica salvo com segurança.</p>
 
-      <button onClick={google} className="mt-8 h-12 rounded-xl bg-secondary font-semibold text-secondary-foreground">
+      <Button type="button" variant="secondary" onClick={google} className="mt-8 h-12 rounded-xl gap-3 font-semibold">
+        <img src={googleLogo.url} alt="" aria-hidden="true" width={20} height={20} className="h-5 w-5 shrink-0" />
         Continuar com Google
-      </button>
+      </Button>
       <div className="my-6 text-center text-xs uppercase tracking-widest text-muted-foreground">ou</div>
 
       <form onSubmit={submit} className="space-y-3">

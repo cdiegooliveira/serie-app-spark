@@ -9,6 +9,8 @@ export const Route = createFileRoute("/_authenticated/admin")({
       { name: "description", content: "Painel de administração." },
       { property: "og:title", content: "Admin — Série" },
       { property: "og:description", content: "Painel de administração." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
   }),

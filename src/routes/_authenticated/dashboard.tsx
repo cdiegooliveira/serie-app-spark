@@ -21,6 +21,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       { name: "description", content: "Registre suas séries do dia." },
       { property: "og:title", content: "Treino de hoje — Série" },
       { property: "og:description", content: "Registre suas séries do dia." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Dashboard,
