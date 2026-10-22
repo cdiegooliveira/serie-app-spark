@@ -5,9 +5,9 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
     meta: [
-      { title: "Admin — Série" },
+      { title: "Admin — Spark Gym" },
       { name: "description", content: "Painel de administração." },
-      { property: "og:title", content: "Admin — Série" },
+      { property: "og:title", content: "Admin — Spark Gym" },
       { property: "og:description", content: "Painel de administração." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
