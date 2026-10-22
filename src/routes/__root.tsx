@@ -58,7 +58,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Série — Registro de treinos" },
+      { title: "Spark Gym — Registro de treinos" },
       { name: "description", content: "Registre carga, repetições e cárdio sem distrações." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

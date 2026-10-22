@@ -11,9 +11,9 @@ import { LoaderCircle, LogIn, UserRoundPlus } from "lucide-react";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Entrar — Série" },
+      { title: "Entrar — Spark Gym" },
       { name: "description", content: "Entre para registrar seus treinos." },
-      { property: "og:title", content: "Entrar — Série" },
+      { property: "og:title", content: "Entrar — Spark Gym" },
       { property: "og:description", content: "Entre para registrar seus treinos." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

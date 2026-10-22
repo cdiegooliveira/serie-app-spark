@@ -4,9 +4,9 @@ import { Dumbbell, Activity, History } from "lucide-react";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Série — Bata seu recorde diário" },
+      { title: "Spark Gym — Bata seu recorde diário" },
       { name: "description", content: "O registro de treinos sem distrações. Carga, repetições e cárdio, na academia ou em casa." },
-      { property: "og:title", content: "Série — Bata seu recorde diário" },
+      { property: "og:title", content: "Spark Gym — Bata seu recorde diário" },
       { property: "og:description", content: "O registro de treinos sem distrações." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -22,7 +22,7 @@ function Index() {
         <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
           <Dumbbell className="h-4 w-4" />
         </span>
-        Série
+        Spark Gym
       </header>
 
       <section className="flex flex-1 flex-col justify-center py-16">
