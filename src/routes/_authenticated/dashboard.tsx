@@ -130,15 +130,29 @@ function Dashboard() {
   }
 
   const valid = isCardio ? f.speed && f.minutes : f.weight && f.reps;
-  const field = (k: keyof typeof f, label: string) => (
-    <label className="block">
+  const WEIGHT_OPTIONS = ["2.5", "5", "7.5", "10", "15", "20", "25", "30", "35", "40", "45", "50", "60", "70"];
+  const REP_OPTIONS = ["5", "6", "8", "10", "12", "15", "20", "25"];
+  const valueRow = (k: "weight" | "reps", label: string, options: string[]) => (
+    <div>
       <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
-      <Input
-        inputMode="decimal" value={f[k]}
-        onChange={(e) => setF({ ...f, [k]: e.target.value })}
-        className="h-14 border-0 bg-secondary text-xl font-semibold"
-      />
-    </label>
+      <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {options.map((v) => {
+          const active = f[k] === v;
+          return (
+            <button
+              key={v}
+              type="button"
+              onClick={() => setF((p) => ({ ...p, [k]: active ? "" : v }))}
+              className={`shrink-0 rounded-xl px-4 py-3 text-base font-semibold transition-all duration-200 active:scale-95 ${
+                active ? "bg-primary text-primary-foreground shadow-glow" : "bg-secondary text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {v}{k === "weight" ? " kg" : ""}
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 
   return (
@@ -187,7 +201,7 @@ function Dashboard() {
               {field("speed", "Veloc.")}{field("incline", "Incl. %")}{field("minutes", "Min")}
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-3">{field("weight", "Carga (kg)")}{field("reps", "Repetições")}</div>
+            <div className="space-y-3">{valueRow("weight", "Carga", WEIGHT_OPTIONS)}{valueRow("reps", "Repetições", REP_OPTIONS)}</div>
           )}
           <button
             disabled={!valid || save.isPending} onClick={() => save.mutate()}
