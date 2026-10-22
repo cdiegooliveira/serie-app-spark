@@ -155,7 +155,19 @@ function Dashboard() {
     </div>
   );
 
+  const field = (k: "speed" | "incline" | "minutes", label: string) => (
+    <label className="block">
+      <span className="mb-1.5 block text-xs font-medium uppercase tracking-wider text-muted-foreground">{label}</span>
+      <Input
+        inputMode="decimal" value={f[k]}
+        onChange={(e) => setF((p) => ({ ...p, [k]: e.target.value }))}
+        className="h-14 border-0 bg-secondary text-xl font-semibold"
+      />
+    </label>
+  );
+
   return (
+
     <main className="mx-auto min-h-screen max-w-lg px-5 pb-16 pt-6">
       <header className="flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2 font-bold">
