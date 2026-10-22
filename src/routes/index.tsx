@@ -1,24 +1,57 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Dumbbell, Activity, History } from "lucide-react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Série — Bata seu recorde diário" },
+      { name: "description", content: "O registro de treinos sem distrações. Carga, repetições e cárdio, na academia ou em casa." },
+      { property: "og:title", content: "Série — Bata seu recorde diário" },
+      { property: "og:description", content: "O registro de treinos sem distrações." },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="mx-auto flex min-h-screen max-w-3xl flex-col px-6 py-8">
+      <header className="flex items-center gap-2 text-lg font-bold">
+        <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary text-primary-foreground">
+          <Dumbbell className="h-4 w-4" />
+        </span>
+        Série
+      </header>
+
+      <section className="flex flex-1 flex-col justify-center py-16">
+        <h1 className="text-4xl font-extrabold leading-[1.05] tracking-tight sm:text-6xl">
+          Bata seu recorde diário.{" "}
+          <span className="text-primary">O registro de treinos sem distrações.</span>
+        </h1>
+        <p className="mt-6 max-w-xl text-lg text-muted-foreground">
+          Foque na carga, repetições e cárdio. Nós cuidamos do histórico, seja na academia ou em casa.
+        </p>
+        <Link
+          to="/dashboard"
+          className="mt-10 inline-flex h-14 w-full items-center justify-center rounded-xl bg-primary px-8 text-base font-bold text-primary-foreground shadow-glow transition-transform active:scale-[0.98] sm:w-auto sm:self-start"
+        >
+          Começar meu treino
+        </Link>
+
+        <div className="mt-16 grid gap-3 sm:grid-cols-3">
+          {[
+            { icon: Dumbbell, t: "Carga e reps", d: "Registre uma série em segundos." },
+            { icon: Activity, t: "Cárdio", d: "Velocidade, inclinação e tempo." },
+            { icon: History, t: "Histórico", d: "Veja sua evolução ao longo do tempo." },
+          ].map(({ icon: Icon, t, d }) => (
+            <div key={t} className="rounded-2xl bg-card p-5 shadow-card">
+              <Icon className="h-5 w-5 text-primary" />
+              <p className="mt-3 font-semibold">{t}</p>
+              <p className="text-sm text-muted-foreground">{d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </main>
   );
 }
