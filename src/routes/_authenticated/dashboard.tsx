@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { CheckCircle2, Dumbbell, Lock, LogOut, Lightbulb, Trash2, TrendingUp } from "lucide-react";
+import type { TablesInsert } from "@/integrations/supabase/types";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -64,7 +65,7 @@ function Dashboard() {
   const save = useMutation({
     mutationFn: async () => {
       const n = (v: string) => (v === "" ? null : Number(v.replace(",", ".")));
-      const row = isCardio
+      const row: TablesInsert<"workout_sets"> = isCardio
         ? { exercise, speed: n(f.speed), incline: n(f.incline), duration_min: n(f.minutes), weight_kg: null, reps: null }
         : { exercise, weight_kg: n(f.weight), reps: n(f.reps), speed: null, incline: null, duration_min: null };
       const { error } = await supabase.from("workout_sets").insert(row);
